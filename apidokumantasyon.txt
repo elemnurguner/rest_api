@@ -1,0 +1,259 @@
+Kitap Yönetim API'si
+
+Temel URL:
+http://localhost/rest_api/index.php/
+
+Kimlik Doğrulama:
+- API Anahtarı: X-API-Key başlığında gönderilmelidir.
+- Geçerli API Anahtarı: 8f9c9cbdb0c57a4bc4d630a5297ac180830c348e899c9b5a22091460c4f19527
+
+Endpointler:
+
+1. Tüm Kitapları Listele
+- URL: /books
+- Method: GET
+- Başarı Yanıtı:
+  - Kod: 200 OK
+  - İçerik:
+    {
+        "type": "success",
+        "data": [
+            {
+                "id": 1,
+                "title": "Kitap Başlığı",
+                "author": "Yazar Adı",
+                "isbn": "1234567890",
+                "price": 19.99
+            }
+            // Daha fazla kitap
+        ],
+        "count": 2
+    }
+- Hata Yanıtı:
+  - Kod: 500 Internal Server Error
+  - İçerik:
+    {
+        "type": "error",
+        "message": "Veritabanı hatası",
+        "error": "Veritabanı hata mesajı"
+    }
+
+2. Kitap Detayı (ID ile)
+- URL: /books/{id}
+- Method: GET
+- URL Parametreleri:
+  - Gerekli: id=[integer] (Kitap ID'si)
+- Başarı Yanıtı:
+  - Kod: 200 OK
+  - İçerik:
+    {
+        "type": "success",
+        "data": {
+            "id": 1,
+            "title": "Kitap Başlığı",
+            "author": "Yazar Adı",
+            "isbn": "1234567890",
+            "price": 19.99
+        }
+    }
+- Hata Yanıtı:
+  - Kod: 400 Bad Request
+  - İçerik:
+    {
+        "type": "error",
+        "message": "Geçersiz kitap ID'si"
+    }
+  - Kod: 404 Not Found
+  - İçerik:
+    {
+        "type": "error",
+        "message": "Kitap bulunamadı"
+    }
+
+3. Yeni Kitap Ekle
+- URL: /books
+- Method: POST
+- Veri Parametreleri:
+  - Gerekli:
+    - title=[string] (Kitap Başlığı)
+    - author=[string] (Yazar Adı)
+    - isbn=[string] (ISBN)
+    - price=[float] (Fiyat)
+- Başarı Yanıtı:
+  - Kod: 201 Created
+  - İçerik:
+    {
+        "type": "success",
+        "message": "Kitap başarıyla eklendi"
+    }
+- Hata Yanıtı:
+  - Kod: 400 Bad Request
+  - İçerik:
+    {
+        "type": "error",
+        "message": "Geçersiz veri"
+    }
+  - Kod: 500 Internal Server Error
+  - İçerik:
+    {
+        "type": "error",
+        "message": "Veritabanı hatası",
+        "error": "Veritabanı hata mesajı"
+    }
+
+4. Kitap Güncelle
+- URL: /books/{id}
+- Method: PUT
+- URL Parametreleri:
+  - Gerekli: id=[integer] (Kitap ID'si)
+- Veri Parametreleri:
+  - Gerekli:
+    - title=[string] (Kitap Başlığı)
+    - author=[string] (Yazar Adı)
+    - isbn=[string] (ISBN)
+    - price=[float] (Fiyat)
+- Başarı Yanıtı:
+  - Kod: 200 OK
+  - İçerik:
+    {
+        "type": "success",
+        "message": "Kitap başarıyla güncellendi"
+    }
+- Hata Yanıtı:
+  - Kod: 400 Bad Request
+  - İçerik:
+    {
+        "type": "error",
+        "message": "Geçersiz veri"
+    }
+  - Kod: 500 Internal Server Error
+  - İçerik:
+    {
+        "type": "error",
+        "message": "Kitap güncellenirken bir hata oluştu"
+    }
+
+5. Kitap Sil
+- URL: /books/{id}
+- Method: DELETE
+- URL Parametreleri:
+  - Gerekli: id=[integer] (Kitap ID'si)
+- Başarı Yanıtı:
+  - Kod: 200 OK
+  - İçerik:
+    {
+        "type": "success",
+        "message": "Kitap başarıyla silindi"
+    }
+- Hata Yanıtı:
+  - Kod: 400 Bad Request
+  - İçerik:
+    {
+        "type": "error",
+        "message": "Geçersiz kitap ID'si"
+    }
+  - Kod: 500 Internal Server Error
+  - İçerik:
+    {
+        "type": "error",
+        "message": "Kitap silinirken bir hata oluştu"
+    }
+
+6. Yöntem İzin Verilmedi
+- URL: /books/{id}
+- Method: [Geçersiz Method]
+- Başarı Yanıtı:
+  - Kod: 405 Method Not Allowed
+  - İçerik:
+    {
+        "type": "error",
+        "message": "Bu yöntem desteklenmiyor"
+    }
+
+---
+
+**Postman Test Senaryoları**
+
+1. **Tüm Kitapları Listele Testi**
+   - **URL:** `GET /books`
+   - **Başarı Durumu:** 200 OK
+   - **Test Senaryosu:**
+     - Yanıt türü: `application/json`
+     - JSON yanıtının `"type"` alanı `"success"` olmalıdır.
+     - `"data"` dizisi boş olmamalıdır.
+     - `"count"` doğru kitap sayısını göstermelidir.
+
+2. **Kitap Detayı Testi**
+   - **URL:** `GET /books/{id}`
+   - **Başarı Durumu:** 200 OK
+   - **Test Senaryosu:**
+     - Yanıt türü: `application/json`
+     - JSON yanıtının `"type"` alanı `"success"` olmalıdır.
+     - `"data"` alanı doğru kitap bilgilerini içermelidir.
+   - **Hata Durumu:**
+     - **Geçersiz ID:** 400 Bad Request
+       - `"type"` alanı `"error"` olmalıdır.
+       - `"message"` alanı `"Geçersiz kitap ID'si"` olmalıdır.
+     - **Kitap Bulunamadı:** 404 Not Found
+       - `"type"` alanı `"error"` olmalıdır.
+       - `"message"` alanı `"Kitap bulunamadı"` olmalıdır.
+
+3. **Yeni Kitap Ekleme Testi**
+   - **URL:** `POST /books`
+   - **Başarı Durumu:** 201 Created
+   - **Test Senaryosu:**
+     - Gövde verisi JSON formatında olmalıdır ve gerekli tüm alanları içermelidir.
+     - Yanıt türü: `application/json`
+     - JSON yanıtının `"type"` alanı `"success"` olmalıdır.
+     - `"message"` alanı `"Kitap başarıyla eklendi"` olmalıdır.
+   - **Hata Durumu:**
+     - **Geçersiz Veri:** 400 Bad Request
+       - `"type"` alanı `"error"` olmalıdır.
+       - `"message"` alanı `"Geçersiz veri"` olmalıdır.
+     - **Veritabanı Hatası:** 500 Internal Server Error
+       - `"type"` alanı `"error"` olmalıdır.
+       - `"message"` alanı `"Veritabanı hatası"` olmalıdır.
+
+4. **Kitap Güncelleme Testi**
+   - **URL:** `PUT /books/{id}`
+   - **Başarı Durumu:** 200 OK
+   - **Test Senaryosu:**
+     - Gövde verisi JSON formatında olmalıdır ve gerekli tüm alanları içermelidir.
+     - Yanıt türü: `application/json`
+     - JSON yanıtının `"type"` alanı `"success"` olmalıdır.
+     - `"message"` alanı `"Kitap başarıyla güncellendi"` olmalıdır.
+   - **Hata Durumu:**
+     - **Geçersiz Veri:** 400 Bad Request
+       - `"type"` alanı `"error"` olmalıdır.
+       - `"message"` alanı `"Geçersiz veri"` olmalıdır.
+     - **Güncelleme Hatası:** 500 Internal Server Error
+       - `"type"` alanı `"error"` olmalıdır.
+       - `"message"` alanı `"Kitap güncellenirken bir hata oluştu"` olmalıdır.
+
+5. **Kitap Silme Testi**
+   - **URL:** `DELETE /books/{id}`
+   - **Başarı Durumu:** 200 OK
+   - **Test Senaryosu:**
+     - Yanıt türü: `application/json`
+     - JSON yanıtının `"type"` alanı `"success"` olmalıdır.
+     - `"message"` alanı `"Kitap başarıyla silindi"` olmalıdır.
+   - **Hata Durumu:**
+     - **Geçersiz ID:** 400 Bad Request
+       - `"type"` alanı `"error"` olmalıdır.
+       - `"message"` alanı `"Geçersiz kitap ID'si"` olmalıdır.
+     - **Silme Hatası:** 500 Internal Server Error
+       - `"type"` alanı `"error"` olmalıdır.
+       - `"message"` alanı `"Kitap silinirken bir hata oluştu"` olmalıdır.
+
+6. **Yöntem İzin Verilmedi Testi**
+   - **URL:** `/books/{id}`
+   - **Method:** [Geçersiz Method]
+   - **Başarı Durumu:** 405 Method Not Allowed
+   - **Test Senaryosu:**
+     - Yanıt türü: `application/json`
+     - JSON yanıtının `"type"` alanı `"error"` olmalıdır.
+     - `"message"` alanı `"Bu yöntem desteklenmiyor"` olmalıdır.
+
+---
+
+Bu doküman, API'nin işlevselliğini test etmek için gerekli tüm bilgileri içermektedir. Postman kullanarak bu testleri gerçekleştirebilirsiniz.
